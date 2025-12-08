@@ -1,0 +1,21 @@
+MATERIAL_ID,MATERIAL_NAME,MATERIAL_DESCRIPTION,MATERIAL_COST
+101,High-Purity Silicon Wafers,"Ultra-pure silicon wafers for semiconductor manufacturing (AERO, IA)",185.50
+115,Lithium Cobalt Oxide Powder,"Cathode material for lithium-ion batteries (ESS, BA)",120.00
+110,Copper Wire (22 AWG),"High-conductivity copper wire, 22 gauge, for electrical applications (IA, BA, ESS)",25.75
+119,Aluminum Alloy 6061 Sheet,"Lightweight and strong aluminum alloy sheet for structural components (AERO, IA)",75.20
+102,Polycarbonate Resin (UV Stabilized),"Durable, UV-stabilized polycarbonate resin for outdoor enclosures (BA, ESS)",48.50
+112,Stainless Steel 316 Tubing,"Corrosion-resistant stainless steel tubing for fluid handling (IA, ESS)",95.00
+117,"SMT Resistors (0603, 10k Ohm)","Surface-mount technology resistors, 0603 package, 10k Ohm resistance (AERO, IA, BA, ESS)",20.00
+111,Epoxy Resin (Two-Part),"Two-part epoxy resin for bonding and encapsulation (AERO, IA)",55.80
+118,Glass Fiber Reinforced Polymer (GFRP),High-strength GFRP composite material for structural applications (AERO),110.30
+109,Nickel Alloy 718 Bar,High-temperature nickel alloy bar for aerospace applications (AERO),198.00
+106,Printed Circuit Board (PCB) Blanks (FR-4),"FR-4 PCB blanks for circuit board fabrication (AERO, IA, BA, ESS)",62.90
+107,"Solder Wire (Lead-Free, SAC305)","Lead-free solder wire, SAC305 alloy, for electronic assembly (AERO, IA, BA, ESS)",38.10
+105,"Ceramic Capacitors (0805, 100nF)","Surface-mount ceramic capacitors, 0805 package, 100nF capacitance (AERO, IA, BA, ESS)",22.00
+104,"Tantalum Capacitors (Case A, 10uF)","Tantalum capacitors, Case A package, 10uF capacitance (AERO, IA)",35.40
+103,Quartz Crystal Oscillators (32.768 kHz),"Precision quartz crystal oscillators for timing applications (AERO, IA, BA, ESS)",88.60
+113,Linear Voltage Regulators (LDO),"Low-dropout linear voltage regulators for power management (AERO, IA, BA, ESS)",28.90
+120,Microcontroller Units (MCUs) (ARM Cortex-M4),"ARM Cortex-M4 based microcontroller units for embedded control (AERO, IA, BA, ESS)",135.75
+114,Solid State Relays (SSRs),"Solid state relays for switching AC loads (IA, BA)",68.00
+116,Thermoplastic Elastomer (TPE) Tubing,"Flexible TPE tubing for fluid and gas transfer (IA, BA)",32.45
+108,Wiring Harness Tape,"Specialized tape for securing and insulating wiring harnesses. (AERO,IA)",24.15

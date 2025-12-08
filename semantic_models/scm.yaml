@@ -1,0 +1,454 @@
+name: SKAWAKAMI_SCM
+tables:
+  - name: DISTRIBUTOR
+    description: The table contains records of business distributors and their operational details. Each record represents a single distributor and includes location information, contact details, service territories, and business classifications.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: DISTRIBUTOR
+    dimensions:
+      - name: DISTRIBUTOR_ID
+        description: 販売代理店の一意識別子（UUID）
+        expr: DISTRIBUTOR_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - 0189398d-93eb-49c0-ac71-a43c4f5d2dc1
+          - fb5b0b46-99a3-4ee2-b9df-9bd8c572226b
+          - 3d35d65c-21c7-496e-991b-6325f11e9aec
+      - name: DISTRIBUTOR_NAME
+        description: 販売代理店の名称
+        expr: DISTRIBUTOR_NAME
+        data_type: VARCHAR(255)
+        sample_values:
+          - Rasmussen and Sons Distribution
+          - Williams and Sons Distribution
+          - Alvarado-Castillo Distribution
+    primary_key:
+      columns:
+        - DISTRIBUTOR_ID
+  - name: DISTRIBUTOR_INVENTORY
+    description: The table contains records of product inventory levels maintained by distributors. Each record tracks stock quantities, reorder thresholds, and safety stock requirements for specific products at distributor locations.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: DISTRIBUTOR_INVENTORY
+    dimensions:
+      - name: DISTRIBUTOR_ID
+        description: distributorへの外部キー
+        expr: DISTRIBUTOR_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - 0189398d-93eb-49c0-ac71-a43c4f5d2dc1
+          - fb5b0b46-99a3-4ee2-b9df-9bd8c572226b
+          - 3d35d65c-21c7-496e-991b-6325f11e9aec
+      - name: PRODUCT_ID
+        description: productへの外部キー
+        expr: PRODUCT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - f81cb962-fcb4-401e-8b2e-32d848b6ce78
+          - 05cdd4a5-c755-4ed6-90ab-5ea9107fd5cb
+          - ff8bbcb6-3640-45df-ae4e-3f75bf8093b8
+      - name: QUANTITY_ON_HAND
+        description: 販売代理店で現在手元にある製品の数量
+        expr: QUANTITY_ON_HAND
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '243'
+          - '234'
+          - '26'
+  - name: MFG_INVENTORY
+    description: The table contains records of manufacturing inventory levels for materials and components at production facilities. Each record tracks current stock quantities, order quantities, and safety stock requirements along with supply chain timing metrics.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: MFG_INVENTORY
+    dimensions:
+      - name: DAYS_FORWARD_COVERAGE
+        description: CMF施設での原材料の現在の手持ち在庫が、その材料の予想需要に基づいて、さらなる補充がない場合に生産を維持できる日数
+        expr: DAYS_FORWARD_COVERAGE
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '22'
+          - '55'
+          - '44'
+      - name: LEAD_TIME_VARIABILITY
+        description: 材料のリードタイムの変動性（日数で測定）
+        expr: LEAD_TIME_VARIABILITY
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '9'
+          - '5'
+          - '3'
+      - name: MATERIAL_ID
+        description: 原材料テーブルへの外部キー（該当する場合）
+        expr: MATERIAL_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - '102'
+          - '101'
+          - '115'
+      - name: MATERIAL_LEAD_TIME
+        description: この原材料を調達するのに必要な日数
+        expr: MATERIAL_LEAD_TIME
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '17'
+          - '23'
+          - '45'
+      - name: MFG_PLANT_ID
+        description: MFG_PLANTへの外部キー
+        expr: MFG_PLANT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - '105'
+          - '102'
+          - '107'
+      - name: QUANTITY_ON_HAND
+        description: 現在手元にある材料/コンポーネントの数量
+        expr: QUANTITY_ON_HAND
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '269'
+          - '261'
+          - '229'
+      - name: SAFETY_STOCK_LEVEL
+        description: 維持すべき最低在庫レベル
+        expr: SAFETY_STOCK_LEVEL
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '22'
+          - '55'
+          - '108'
+  - name: MFG_PLANT
+    description: The table contains records of manufacturing plants. Each record represents a single facility and includes location details, operational characteristics such as size and staffing levels, management contact information, and business line classifications.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: MFG_PLANT
+    dimensions:
+      - name: ADDRESS
+        description: 製造工場の住所
+        expr: ADDRESS
+        data_type: VARCHAR(255)
+        sample_values:
+          - 1385 Gomez Skyway
+          - 279 Amanda Prairie
+          - 744 Brittany Inlet Apt. 220
+      - name: BUSINESS_LINE
+        description: 製造工場が属するビジネスライン
+        expr: BUSINESS_LINE
+        data_type: VARCHAR(10)
+        sample_values:
+          - BA
+          - AERO
+          - ESS
+      - name: CITY
+        description: 製造工場が所在する都市名
+        expr: CITY
+        data_type: VARCHAR(100)
+        sample_values:
+          - Khanborough
+          - Anthonymouth
+          - Lake Melissa
+      - name: MFG_PLANT_ID
+        description: 各製造工場の一意識別子
+        expr: MFG_PLANT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - '105'
+          - '102'
+          - '107'
+      - name: MFG_PLANT_NAME
+        description: 製造工場の名称
+        expr: MFG_PLANT_NAME
+        data_type: VARCHAR(255)
+        sample_values:
+          - Morton LLC CMF - Lake Melissa
+          - Wade and Sons CMF - Anthonymouth
+          - Hood, Evans and Johnson CMF - Khanborough
+      - name: NUMBER_OF_EMPLOYEES
+        description: 製造工場の従業員数
+        expr: NUMBER_OF_EMPLOYEES
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '105'
+          - '443'
+          - '303'
+      - name: PLANT_MANAGER_CONTACT_ID
+        description: 各製造工場を管理する担当者の一意識別子
+        expr: PLANT_MANAGER_CONTACT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - bba900a1-b93b-447d-990e-eb8a83626d5f
+          - fa14fe06-6dce-475b-8cf6-074bfe10293c
+          - 0d82c03d-3797-4a5a-a1f5-951c6d89f360
+      - name: STATE
+        description: 製造工場が所在する州の略称（米国の場合）
+        expr: STATE
+        data_type: VARCHAR(50)
+        sample_values:
+          - VA
+          - MA
+          - VI
+      - name: ZIP_CODE
+        description: 米国内の特定地域を表す5桁のコード
+        expr: ZIP_CODE
+        data_type: VARCHAR(20)
+        sample_values:
+          - '92244'
+          - '38328'
+          - '82224'
+    facts:
+      - name: LATITUDE
+        description: 地理的な緯度座標
+        expr: LATITUDE
+        data_type: NUMBER(10,6)
+        access_modifier: public_access
+        sample_values:
+          - '63.420883'
+          - '-4.717164'
+          - '-27.314719'
+      - name: LONGITUDE
+        description: 製造工場の位置の経度
+        expr: LONGITUDE
+        data_type: NUMBER(11,6)
+        access_modifier: public_access
+        sample_values:
+          - '-77.774331'
+          - '-166.240366'
+          - '156.973007'
+      - name: SQUARE_FOOTAGE
+        description: 平方フィートで測定された製造工場の規模
+        expr: SQUARE_FOOTAGE
+        data_type: NUMBER(10,2)
+        access_modifier: public_access
+        sample_values:
+          - '132564.00'
+          - '166907.00'
+          - '186995.00'
+    primary_key:
+      columns:
+        - MFG_PLANT_ID
+  - name: ORDERS
+    description: The table contains records of customer orders processed through distributors. Each record represents a single order and includes details about the customer, distributor, product, pricing, and order status.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: ORDERS
+    dimensions:
+      - name: PRODUCT_ID
+        description: 製品への外部キー
+        expr: PRODUCT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - aff6312b-9d3c-4531-9c3a-b542894e5905
+          - 56399415-2ab3-4ef8-9f19-a48990c0b1ed
+          - 3f8265a5-c27a-4f4e-a88f-d4fca449b0b6
+  - name: PRODUCT
+    description: The table contains records of products available for sale or distribution. Each record represents a single product and includes descriptive information, pricing details, and business categorization.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: PRODUCT
+    dimensions:
+      - name: BUSINESS_LINE
+        description: ビジネスライン（AERO、IA、BA、ESS）
+        expr: BUSINESS_LINE
+        data_type: VARCHAR(10)
+        sample_values:
+          - BA
+          - AERO
+          - ESS
+      - name: PRODUCT_ID
+        description: 製品の一意識別子（UUID）
+        expr: PRODUCT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - 6e1deaf4-5da0-4af0-9c94-0502a69807ff
+          - 4c41253a-559a-4cb3-957d-6a064c9d1262
+          - e56703a8-286e-4bc6-b78f-7d448b6f6817
+      - name: PRODUCT_NAME
+        description: 製品名
+        expr: PRODUCT_NAME
+        data_type: VARCHAR(255)
+        sample_values:
+          - Engine Monitoring System
+          - HVAC Control System
+          - Renewable Energy System
+    primary_key:
+      columns:
+        - PRODUCT_ID
+  - name: RAW_MATERIAL
+    description: The table contains records of raw materials used in supply chain operations. Each record represents a single material and includes descriptive information and cost details.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: RAW_MATERIAL
+    dimensions:
+      - name: MATERIAL_ID
+        description: 各原材料の一意識別子
+        expr: MATERIAL_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - '104'
+          - '101'
+          - '110'
+      - name: MATERIAL_NAME
+        description: サプライチェーンネットワークで使用される原材料の名称
+        expr: MATERIAL_NAME
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - High-Purity Silicon Wafers
+          - Copper Wire (22 AWG)
+          - Polycarbonate Resin (UV Stabilized)
+    primary_key:
+      columns:
+        - MATERIAL_ID
+  - name: SHIPMENT
+    description: The table contains records of shipments between facilities, distributors, and customers. Each record represents a single shipment and includes details about origin and destination locations, shipping dates, delivery timing, costs, and tracking information.
+    base_table:
+      database: SNOWFLAKE_SI_HANDSON
+      schema: RAW_SCM
+      table: SHIPMENT
+    dimensions:
+      - name: DESTINATION_FACILITY_ID
+        description: 出荷先施設（FAT、販売代理店、または顧客）への外部キー
+        expr: DESTINATION_FACILITY_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - f0bd7576-e2a8-4940-8bbf-4ce9aaa60604
+          - 054768d1-416a-4eb2-a7db-b3394d10e114
+          - a772c4f9-2865-4891-ae6b-38ab7d0271e1
+      - name: ORIGIN_FACILITY_ID
+        description: 出荷元施設（CMFまたはFAT）への外部キー
+        expr: ORIGIN_FACILITY_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - ec03a95b-5607-4d35-a2d4-8da81773e20b
+          - c5b64c31-f555-47a0-ba5d-e6d9fc8b72e6
+          - 16cb7d81-3e72-4329-b650-6d9712b3581c
+      - name: SHIPMENT_ID
+        description: 出荷の一意識別子（UUID）
+        expr: SHIPMENT_ID
+        data_type: VARCHAR(36)
+        sample_values:
+          - 07bd9634-2edf-4d1b-8ad3-827b75add6e6
+          - 620133e9-0887-4c92-9654-c720fb0e3209
+          - 3a49efa9-e6cf-46c5-985d-20b184b7a4de
+      - name: TRACKING_NUMBER
+        description: 出荷の追跡番号
+        expr: TRACKING_NUMBER
+        data_type: VARCHAR(50)
+        sample_values:
+          - AB591234WRWQJB
+          - LK121898IUPYDA
+          - TH003009TRKCZS
+    time_dimensions:
+      - name: ACTUAL_DELIVERY_DATE
+        description: 出荷の実際の配達日
+        expr: ACTUAL_DELIVERY_DATE
+        data_type: DATE
+        sample_values:
+          - '2025-03-03'
+          - '2025-01-24'
+          - '2025-02-26'
+      - name: EXPECTED_DELIVERY_DATE
+        description: 出荷の予定配達日
+        expr: EXPECTED_DELIVERY_DATE
+        data_type: DATE
+        sample_values:
+          - '2025-02-11'
+          - '2025-01-25'
+          - '2025-02-26'
+      - name: SHIP_DATE
+        description: 出荷された日付
+        expr: SHIP_DATE
+        data_type: DATE
+        sample_values:
+          - '2025-02-07'
+          - '2025-01-21'
+          - '2024-12-06'
+    facts:
+      - name: SHIPPING_COST
+        description: 出荷コスト
+        expr: SHIPPING_COST
+        data_type: NUMBER(10,2)
+        access_modifier: public_access
+        sample_values:
+          - '401.59'
+          - '458.73'
+          - '258.14'
+    primary_key:
+      columns:
+        - SHIPMENT_ID
+relationships:
+  - name: DISTRIBUTOR_INVENTORY_TO_DISTRIBUTOR
+    left_table: DISTRIBUTOR_INVENTORY
+    right_table: DISTRIBUTOR
+    relationship_columns:
+      - left_column: DISTRIBUTOR_ID
+        right_column: DISTRIBUTOR_ID
+    relationship_type: many_to_one
+    join_type: inner
+  - name: DISTRIBUTOR_INVENTORY_TO_PRODUCT
+    left_table: DISTRIBUTOR_INVENTORY
+    right_table: PRODUCT
+    relationship_columns:
+      - left_column: PRODUCT_ID
+        right_column: PRODUCT_ID
+    relationship_type: many_to_one
+    join_type: inner
+  - name: MFG_INVENTORY_TO_MFG_PLANT
+    left_table: MFG_INVENTORY
+    right_table: MFG_PLANT
+    relationship_columns:
+      - left_column: MFG_PLANT_ID
+        right_column: MFG_PLANT_ID
+    relationship_type: many_to_one
+    join_type: inner
+  - name: MFG_INVENTORY_TO_RAW_MATERIAL
+    left_table: MFG_INVENTORY
+    right_table: RAW_MATERIAL
+    relationship_columns:
+      - left_column: MATERIAL_ID
+        right_column: MATERIAL_ID
+    relationship_type: many_to_one
+    join_type: inner
+  - name: ORDERS_TO_PRODUCT
+    left_table: ORDERS
+    right_table: PRODUCT
+    relationship_columns:
+      - left_column: PRODUCT_ID
+        right_column: PRODUCT_ID
+    relationship_type: many_to_one
+    join_type: inner
+  - name: SHIPMENT_TO_MFG_PLANT
+    left_table: SHIPMENT
+    right_table: MFG_PLANT
+    relationship_columns:
+      - left_column: ORIGIN_FACILITY_ID
+        right_column: MFG_PLANT_ID
+    relationship_type: many_to_one
+    join_type: inner
+verified_queries:
+  - name: 各販売代理店におけるビル管理システムの平均在庫レベルはどれくらいですか？
+    question: 各販売代理店におけるビル管理システムの平均在庫レベルはどれくらいですか？
+    sql: SELECT d.distributor_name, AVG(di.quantity_on_hand) AS average_inventory FROM distributor_inventory AS di JOIN distributor AS d ON di.distributor_id = d.distributor_id JOIN product AS p ON di.product_id = p.product_id WHERE p.product_name = 'Building Management System' GROUP BY d.distributor_name
+    verified_at: 1764918099
+    verified_by: Semantic Model Generator
+  - name: ノースカロライナ州シャーロット近郊の施設からの出荷品を表示してください
+    question: ノースカロライナ州シャーロット近郊の施設からの出荷品を表示してください
+    sql: 'SELECT * FROM shipment AS s JOIN mfg_plant AS cmf ON s.origin_facility_id = cmf.MFG_PLANT_ID WHERE ST_DWITHIN(ST_MAKEPOINT(cmf.longitude, cmf.latitude) /* Facility Location */, ST_MAKEPOINT(-80.8431, 35.2271) /* Charlotte, NC: longitude, latitude */, 50 * 1609.34) /* 50 miles converted to meters */'
+    verified_at: 1764918099
+    verified_by: Semantic Model Generator
+  - name: 弊社の製造工場で在庫が不足している原材料はどれですか？
+    question: 弊社の製造工場で在庫が不足している原材料はどれですか？
+    sql: SELECT cf.mfg_plant_name, m.material_name, ci.quantity_on_hand, ci.safety_stock_level, ci.days_forward_coverage, ci.material_lead_time, ci.lead_time_variability FROM mfg_inventory AS ci JOIN mfg_plant AS cf ON ci.MFG_PLANT_ID = cf.MFG_PLANT_ID JOIN raw_material AS m ON ci.material_id = m.material_id WHERE quantity_on_hand < safety_stock_level AND DAYS_FORWARD_COVERAGE <= MATERIAL_LEAD_TIME + LEAD_TIME_VARIABILITY
+    verified_at: 1764918099
+    verified_by: Semantic Model Generator
+  - name: AEROビジネスラインには何件の注文がありますか？
+    question: AEROビジネスラインには何件の注文がありますか？
+    sql: SELECT COUNT(*) AS aero_order_count FROM orders AS o JOIN product AS p ON o.product_id = p.product_id WHERE p.business_line = 'AERO'
+    verified_at: 1764918099
+    verified_by: Semantic Model Generator
