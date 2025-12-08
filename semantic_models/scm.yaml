@@ -1,4 +1,4 @@
-name: SKAWAKAMI_SCM
+name: SCM
 tables:
   - name: DISTRIBUTOR
     description: The table contains records of business distributors and their operational details. Each record represents a single distributor and includes location information, contact details, service territories, and business classifications.
@@ -432,23 +432,23 @@ relationships:
     relationship_type: many_to_one
     join_type: inner
 verified_queries:
-  - name: 各販売代理店におけるビル管理システムの平均在庫レベルはどれくらいですか？
+  - name: question1
     question: 各販売代理店におけるビル管理システムの平均在庫レベルはどれくらいですか？
     sql: SELECT d.distributor_name, AVG(di.quantity_on_hand) AS average_inventory FROM distributor_inventory AS di JOIN distributor AS d ON di.distributor_id = d.distributor_id JOIN product AS p ON di.product_id = p.product_id WHERE p.product_name = 'Building Management System' GROUP BY d.distributor_name
-    verified_at: 1764918099
+    verified_at: 1765194988
     verified_by: Semantic Model Generator
-  - name: ノースカロライナ州シャーロット近郊の施設からの出荷品を表示してください
+  - name: question 4
     question: ノースカロライナ州シャーロット近郊の施設からの出荷品を表示してください
-    sql: 'SELECT * FROM shipment AS s JOIN mfg_plant AS cmf ON s.origin_facility_id = cmf.MFG_PLANT_ID WHERE ST_DWITHIN(ST_MAKEPOINT(cmf.longitude, cmf.latitude) /* Facility Location */, ST_MAKEPOINT(-80.8431, 35.2271) /* Charlotte, NC: longitude, latitude */, 50 * 1609.34) /* 50 miles converted to meters */'
-    verified_at: 1764918099
+    sql: SELECT * FROM shipment AS s JOIN mfg_plant AS cmf ON s.origin_facility_id = cmf.MFG_PLANT_ID WHERE ST_DWITHIN(ST_MAKEPOINT(cmf.longitude, cmf.latitude), ST_MAKEPOINT(-80.8431, 35.2271), 50 * 1609.34)
+    verified_at: 1765194988
     verified_by: Semantic Model Generator
-  - name: 弊社の製造工場で在庫が不足している原材料はどれですか？
-    question: 弊社の製造工場で在庫が不足している原材料はどれですか？
+  - name: question 2
+    question: 弊社の製造工場で在庫不足のリスクが高い原材料はどれですか？
     sql: SELECT cf.mfg_plant_name, m.material_name, ci.quantity_on_hand, ci.safety_stock_level, ci.days_forward_coverage, ci.material_lead_time, ci.lead_time_variability FROM mfg_inventory AS ci JOIN mfg_plant AS cf ON ci.MFG_PLANT_ID = cf.MFG_PLANT_ID JOIN raw_material AS m ON ci.material_id = m.material_id WHERE quantity_on_hand < safety_stock_level AND DAYS_FORWARD_COVERAGE <= MATERIAL_LEAD_TIME + LEAD_TIME_VARIABILITY
-    verified_at: 1764918099
+    verified_at: 1765194988
     verified_by: Semantic Model Generator
-  - name: AEROビジネスラインには何件の注文がありますか？
+  - name: question 3
     question: AEROビジネスラインには何件の注文がありますか？
     sql: SELECT COUNT(*) AS aero_order_count FROM orders AS o JOIN product AS p ON o.product_id = p.product_id WHERE p.business_line = 'AERO'
-    verified_at: 1764918099
+    verified_at: 1765194988
     verified_by: Semantic Model Generator
