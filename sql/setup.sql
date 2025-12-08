@@ -17,7 +17,6 @@ CREATE SCHEMA IF NOT EXISTS raw_scm;
 GRANT USAGE ON DATABASE SNOWFLAKE_SI_HANDSON TO ROLE scm_intelligence_role;
 GRANT USAGE ON SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
 GRANT CREATE AGENT ON FUTURE SCHEMAS on database SNOWFLAKE_SI_HANDSON TO ROLE scm_intelligence_role;
-GRANT USAGE, OPERATE ON WAREHOUSE SI_HANDSON_WH TO ROLE scm_intelligence_role;
 GRANT SELECT ON ALL TABLES IN SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
 GRANT SELECT ON FUTURE TABLES IN SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
 
@@ -33,6 +32,7 @@ CREATE WAREHOUSE IF NOT EXISTS si_handson_wh
 	INITIALLY_SUSPENDED = TRUE
   COMMENT = 'si_handson_wh'
 ;
+GRANT USAGE, OPERATE ON WAREHOUSE SI_HANDSON_WH TO ROLE scm_intelligence_role;
 
 
 --------- Create Table ---------
@@ -263,19 +263,19 @@ COPY FILES INTO @raw_data FROM @SI_GIT_REPOSITORY/branches/main/data;
 
 -- テーブルへデータをロードする
 -- COPY INTO CMF_PRODUCTION_CAPACITY from @raw_data files=('cmf_production_capacity.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
--- COPY INTO COMPONENT from @raw_data files=('component.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
--- COPY INTO CUSTOMER from @raw_data files=('customer.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
-COPY INTO DISTRIBUTOR from @raw_data files=('distributor.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
-COPY INTO DISTRIBUTOR_INVENTORY from @raw_data files=('distributor_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
--- COPY INTO FAT_FACILITY from @raw_data files=('fat_facility.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
--- COPY INTO FAT_INVENTORY from @raw_data files=('fat_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
--- COPY INTO FAT_PRODUCTION_SCHEDULE from @raw_data files=('fat_production_schedule.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO MFG_INVENTORY from @raw_data files=('mfg_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO MFG_PLANT from @raw_data files=('mfg_plant.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO ORDERS from @raw_data files=('orders.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO PRODUCT from @raw_data files=('product.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO RAW_MATERIAL from @raw_data files=('raw_material.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
-COPY INTO SHIPMENT from @raw_data files=('shipment.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+-- COPY INTO COMPONENT from @raw_data files=('component.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+-- COPY INTO CUSTOMER from @raw_data files=('customer.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO DISTRIBUTOR from @raw_data files=('distributor.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO DISTRIBUTOR_INVENTORY from @raw_data files=('distributor_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+-- COPY INTO FAT_FACILITY from @raw_data files=('fat_facility.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+-- COPY INTO FAT_INVENTORY from @raw_data files=('fat_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+-- COPY INTO FAT_PRODUCTION_SCHEDULE from @raw_data files=('fat_production_schedule.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO MFG_INVENTORY from @raw_data files=('mfg_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO MFG_PLANT from @raw_data files=('mfg_plant.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO ORDERS from @raw_data files=('orders.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO PRODUCT from @raw_data files=('product.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO RAW_MATERIAL from @raw_data files=('raw_material.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+COPY INTO SHIPMENT from @raw_data files=('shipment.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
 -- COPY INTO TRANSPORT_COST_SURCHARGE from @raw_data files=('transport_cost_surcharge.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
 
 
