@@ -1,6 +1,11 @@
 // Step0: コンテキスト設定
 USE ROLE accountadmin;
 
+-- migrate to new intelligence
+CREATE SNOWFLAKE INTELLIGENCE IF NOT EXISTS SNOWFLAKE_INTELLIGENCE_OBJECT_DEFAULT;
+ALTER DATABASE IF EXISTS SNOWFLAKE_INTELLIGENCE rename to old_ingelligence;
+
+-- create role and grant database role to it
 CREATE ROLE scm_intelligence_role;
 GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE scm_intelligence_role;
 
