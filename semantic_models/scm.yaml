@@ -1,4 +1,5 @@
-name: SCM
+# 以下の*****の部分を自分の名前に変更してください
+name: *****_SUPPLY_CHAIN_NETWORK
 tables:
   - name: DISTRIBUTOR
     description: The table contains records of business distributors and their operational details. Each record represents a single distributor and includes location information, contact details, service territories, and business classifications.
