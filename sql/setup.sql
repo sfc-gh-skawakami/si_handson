@@ -1,10 +1,39 @@
+// Step0: コンテキスト設定
+USE ROLE accountadmin;
+
+CREATE ROLE scm_intelligence_role;
+GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE scm_intelligence_role;
+
+-- ROLEをユーザーに付与(以下のSQLを参加者ユーザー分実行)
+GRANT ROLE scm_intelligence_role TO USER ******; --(参加者ユーザー名に変更して実行)
+
+
 // Step1: オブジェクトの作成 //
+USE ROLE sysadmin;
 --------- Create Database ---------
 CREATE DATABASE IF NOT EXISTS snowflake_si_handson;
 CREATE SCHEMA IF NOT EXISTS raw_scm;
 
+GRANT USAGE ON DATABASE SNOWFLAKE_SI_HANDSON TO ROLE scm_intelligence_role;
+GRANT USAGE ON SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
+GRANT CREATE AGENT ON FUTURE SCHEMAS on database SNOWFLAKE_SI_HANDSON TO ROLE scm_intelligence_role;
+GRANT USAGE, OPERATE ON WAREHOUSE SI_HANDSON_WH TO ROLE scm_intelligence_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA RAW_SCM TO ROLE scm_intelligence_role;
+
 -- CREAE STAGE
 CREATE OR REPLACE STAGE raw_data directory = (ENABLE = TRUE);
+
+-- CREATE WAREHOUSE
+CREATE WAREHOUSE IF NOT EXISTS si_handson_wh
+  WAREHOUSE_SIZE = 'X-SMALL'
+  WAREHOUSE_TYPE = 'STANDARD'
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE
+	INITIALLY_SUSPENDED = TRUE
+  COMMENT = 'si_handson_wh'
+;
+
 
 --------- Create Table ---------
 -- -- CMF_PRODUCTION_CAPACITY
@@ -227,7 +256,28 @@ CREATE OR REPLACE GIT REPOSITORY SI_GIT_REPOSITORY
 -- チェック
 ls @SI_GIT_REPOSITORY/branches/main;
 
+// Step 3: Load data to tables
+
 -- GITHUBからデータをファイルを持ってくる
 COPY FILES INTO @raw_data FROM @SI_GIT_REPOSITORY/branches/main/data;
-COPY FILES INTO @semantic_model_stage FROM @SI_GIT_REPOSITORY/branches/main/semantic_model;
 
+-- テーブルへデータをロードする
+-- COPY INTO CMF_PRODUCTION_CAPACITY from @raw_data files=('cmf_production_capacity.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');
+-- COPY INTO COMPONENT from @raw_data files=('component.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
+-- COPY INTO CUSTOMER from @raw_data files=('customer.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
+COPY INTO DISTRIBUTOR from @raw_data files=('distributor.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;
+COPY INTO DISTRIBUTOR_INVENTORY from @raw_data files=('distributor_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+-- COPY INTO FAT_FACILITY from @raw_data files=('fat_facility.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+-- COPY INTO FAT_INVENTORY from @raw_data files=('fat_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+-- COPY INTO FAT_PRODUCTION_SCHEDULE from @raw_data files=('fat_production_schedule.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO MFG_INVENTORY from @raw_data files=('mfg_inventory.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO MFG_PLANT from @raw_data files=('mfg_plant.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO ORDERS from @raw_data files=('orders.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO PRODUCT from @raw_data files=('product.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO RAW_MATERIAL from @raw_data files=('raw_material.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+COPY INTO SHIPMENT from @raw_data files=('shipment.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+-- COPY INTO TRANSPORT_COST_SURCHARGE from @raw_data files=('transport_cost_surcharge.csv') FILE_FORMAT = (FORMAT_NAME= 'csv_ff');;;
+
+
+// Step 4: Enable Cross region inference (required to use claude-4-sonnet)
+ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'AWS_US';
