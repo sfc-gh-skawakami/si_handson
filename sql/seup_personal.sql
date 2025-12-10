@@ -1,4 +1,5 @@
 -- コンテキスト設定
+USE ROLE scm_intelligence_role;
 USE DATABASE SNOWFLAKE_SI_HANDSON;
 USE SCHEMA RAW_SCM;
 
