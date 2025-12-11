@@ -248,32 +248,33 @@ create or replace TABLE SHIPMENT (
 -- )COMMENT='ある部品製造施設（CMF）から別の施設へ原材料を移動させる際の輸送コスト追加料金'
 -- ;
 
-// Step2: GITリポジトリからデータとスクリプトを取得 //
-USE ROLE accountadmin;
+// Step2: CSVファイルをステージへアップロード
+-- // Step2: GITリポジトリからデータとスクリプトを取得 //
+-- USE ROLE accountadmin;
 
--- GIT連携のため、AIP統合を作成する
--- CREATE API INTEGRATION IF NOT EXISTS SI_GIT_INTEGRATION
-CREATE OR REPLACE API INTEGRATION SI_GIT_INTEGRATION
-  API_PROVIDER = git_https_api
-  API_ALLOWED_PREFIXES = ('https://github.com/sfc-gh-skawakami/si_handson.git')
-  ENABLED = TRUE;
+-- -- GIT連携のため、AIP統合を作成する
+-- -- CREATE API INTEGRATION IF NOT EXISTS SI_GIT_INTEGRATION
+-- CREATE OR REPLACE API INTEGRATION SI_GIT_INTEGRATION
+--   API_PROVIDER = git_https_api
+--   API_ALLOWED_PREFIXES = ('https://github.com/sfc-gh-skawakami/si_handson.git')
+--   ENABLED = TRUE;
 
--- GIT統合の作成
-CREATE OR REPLACE GIT REPOSITORY SI_GIT_REPOSITORY
-  API_INTEGRATION = SI_GIT_INTEGRATION
-  ORIGIN = 'https://github.com/sfc-gh-skawakami/si_handson.git';
+-- -- GIT統合の作成
+-- CREATE OR REPLACE GIT REPOSITORY SI_GIT_REPOSITORY
+--   API_INTEGRATION = SI_GIT_INTEGRATION
+--   ORIGIN = 'https://github.com/sfc-gh-skawakami/si_handson.git';
 
-GRANT READ ON GIT REPOSITORY SI_GIT_REPOSITORY to role sysadmin;
+-- GRANT READ ON GIT REPOSITORY SI_GIT_REPOSITORY to role sysadmin;
 
-use role sysadmin;
+-- use role sysadmin;
 
--- チェック
-ls @SI_GIT_REPOSITORY/branches/main;
+-- -- チェック
+-- ls @SI_GIT_REPOSITORY/branches/main;
 
-// Step 3: Load data to tables
+-- // Step 3: Load data to tables
 
--- GITHUBからデータをファイルを持ってくる
-COPY FILES INTO @raw_data FROM @SI_GIT_REPOSITORY/branches/main/data;
+-- -- GITHUBからデータをファイルを持ってくる
+-- COPY FILES INTO @raw_data FROM @SI_GIT_REPOSITORY/branches/main/data;
 
 -- Creaate File Format
 CREATE OR REPLACE FILE FORMAT csv_ff
